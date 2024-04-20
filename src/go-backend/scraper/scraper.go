@@ -6,7 +6,6 @@ import (
 	"fmt"           // format I/O
 	"log"           // pesan kesalahan
 	"time"
-
 	"github.com/gocolly/colly" // framework scraping
 )
 
