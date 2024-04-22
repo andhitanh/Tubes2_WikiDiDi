@@ -5,12 +5,26 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"strings"
 	"time"
+	"net/url"
+	"errors"
+	"sync"
 )
+
+
+var cache = struct {
+	sync.RWMutex
+	data map[string][]string
+}{data: make(map[string][]string)}
+
+var cacheLinks = struct {
+	sync.RWMutex
+	data map[string]bool
+}{data: make(map[string]bool)}
 
 // get link tanpa filter
 func getLinks(pageTitle string) ([]string, error) {
-	url := "https://en.wikipedia.org/wiki/" + pageTitle
-	doc, err := goquery.NewDocument(url)
+	urlString := "https://en.wikipedia.org/wiki/" + pageTitle
+	doc, err := goquery.NewDocument(urlString)
 	if err != nil {
 		return nil, err
 	}
@@ -18,11 +32,39 @@ func getLinks(pageTitle string) ([]string, error) {
 	var links []string
 	doc.Find("#mw-content-text a").Each(func(i int, s *goquery.Selection) {
 		link, exists := s.Attr("href")
-		if exists && strings.HasPrefix(link, "/wiki/") {
-			links = append(links, strings.TrimPrefix(link, "/wiki/"))
+		if exists {
+			// Parse the link to handle encoded characters properly
+			parsedLink, err := url.Parse(link)
+			if err != nil {
+				fmt.Println("Error parsing link:", err)
+				return
+			}
+
+			// Check if the link is a Wikipedia internal link and does not contain ":" or "."
+			if strings.HasPrefix(parsedLink.Path, "/wiki/") && !strings.Contains(parsedLink.Path, ":") && !strings.Contains(parsedLink.Path, ".") {
+				// Decode the path to handle encoded characters
+				decodedPath, err := url.PathUnescape(parsedLink.Path)
+				if err != nil {
+					fmt.Println("Error decoding link path:", err)
+					return
+				}
+				links = append(links, strings.TrimPrefix(decodedPath, "/wiki/"))
+			}
 		}
 	})
-	return links, nil //output: list of hyperlink
+	if len(links) == 0 {
+		return nil, errors.New("no valid links found")
+	}
+
+	cacheLinks.Lock()
+	cacheLinks.data[pageTitle] = true
+	cacheLinks.Unlock()
+
+	cache.Lock()
+	cache.data[pageTitle] = links
+	cache.Unlock()
+
+	return links, nil
 }
 
 func depthLimitedSearch(currentPage string, targetPage string, depthLimit int, visited map[string]bool, path []string) []string {
@@ -38,6 +80,7 @@ func depthLimitedSearch(currentPage string, targetPage string, depthLimit int, v
 	visited[currentPage] = true
 
 	links, err := getLinks(currentPage)
+	// fmt.Println(links)
 	if err != nil {
 		fmt.Println("Error pada page: ", currentPage, ":", err)
 		return nil
@@ -74,8 +117,8 @@ func iterativeDeepeningWikirace(startPage string, targetPage string, maxDepth in
 }
 
 func main() {
-	startPage := "Earth"
-	targetPage := "Moon"
+	startPage := "Joko_Widodo"
+	targetPage := "Prabowo_Subianto"
 	maxDepth := 5
 
 	start := time.Now()
