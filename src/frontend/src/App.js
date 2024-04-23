@@ -36,7 +36,6 @@ const Nav = () => {
 function App() {
   return (
     <div className="App-header">
-      
       <header className="App-header">
         <img src={wikididilogo} className="App-logo" alt="logo" />
         <Nav />

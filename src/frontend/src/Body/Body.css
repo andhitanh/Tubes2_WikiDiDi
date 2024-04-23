@@ -1,0 +1,29 @@
+.body-container {
+    background-image: url('../assets/background.png'); 
+    background-size: cover;
+    background-position: initial;
+    margin-top: 0;
+    margin-left: 2rem; 
+    margin-right: 2rem; 
+    padding:10rem;
+    padding: auto;
+    border-radius: 20px;
+    box-shadow: 0 0 0 3px black, 0 0 0 6px white;
+    overflow: hidden;
+    background-color: #fff;
+  }
+.body-content{
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 35px;
+    font-family: 'Playfair Display', serif;
+}
+
+.body-content p {
+  margin: 0 10px; /* Menambahkan jarak antara teks "To" dan komponen SearchBar */
+}
