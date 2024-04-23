@@ -8,8 +8,13 @@ import (
 // command to RUN :
 // go run bfsweb.go scrap.go queue.go
 
-func breadthFirstSearch(currentPage string, targetPage string, visited map[string]bool, appended map[string]bool, path []string, queue *Queue) []string {
+func breadthFirstSearch(startPage string, currentPage string, targetPage string, visited map[string]bool, appended map[string]bool, path []string, queue *Queue, parent map[string]string) []string {
 	if currentPage == targetPage {
+		path := []string{currentPage}
+			for currentPage != startPage {
+				currentPage = parent[currentPage]
+				path = append([]string{currentPage}, path...)
+			}
 		return path
 	}
 
@@ -26,6 +31,7 @@ func breadthFirstSearch(currentPage string, targetPage string, visited map[strin
 			if !visited[link] && !appended[link] {
 				appended[link] = true
 				queue.Enqueue(link)
+				parent[link] = currentPage
 			}
 		}
 	}
@@ -33,7 +39,7 @@ func breadthFirstSearch(currentPage string, targetPage string, visited map[strin
 	if !queue.QueueEmpty(){
 		frontLink := queue.Dequeue()
 		path = append(path, frontLink)
-		result := breadthFirstSearch(frontLink, targetPage, visited, appended, path, queue)
+		result := breadthFirstSearch(startPage, frontLink, targetPage, visited, appended, path, queue, parent)
 		if result != nil {
 			return result
 		}
@@ -52,10 +58,11 @@ func main() {
 	q := NewQueue()
 	visited := make(map[string]bool)
 	appended := make(map[string]bool)
+	parent := make(map[string]string)
 
 	start := time.Now()
 
-	path := breadthFirstSearch(startPage, targetPage, visited, appended, []string{startPage}, q)
+	path := breadthFirstSearch(startPage, startPage, targetPage, visited, appended, []string{startPage}, q, parent)
 	duration := time.Since(start)
 	if path != nil {
 		fmt.Println("Path yang ditemukan:")

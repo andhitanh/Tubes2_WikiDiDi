@@ -35,7 +35,7 @@ func getLinks(pageTitle string) ([]string, error) {
 					fmt.Println("Error decoding link path:", err)
 					return
 				}
-				fmt.Println((decodedPath))
+				// fmt.Println((decodedPath)) matiin dulu ya
 				links = append(links, strings.TrimPrefix(decodedPath, "/wiki/"))
 			}
 		}
@@ -46,15 +46,15 @@ func getLinks(pageTitle string) ([]string, error) {
 	return links, nil
 }
 
-func main() {
-	links, err := getLinks("Earth")
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	fmt.Println("Links:")
+// func main() {
+// 	links, err := getLinks("Earth")
+// 	if err != nil {
+// 		fmt.Println("Error:", err)
+// 		return
+// 	}
+// 	fmt.Println("Links:")
 
-	for _, link := range links {
-		fmt.Println(link)
-	}
-}
+// 	for _, link := range links {
+// 		fmt.Println(link)
+// 	}
+// }
