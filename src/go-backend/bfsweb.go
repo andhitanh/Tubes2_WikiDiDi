@@ -11,12 +11,13 @@ import (
 func breadthFirstSearch(startPage string, currentPage string, targetPage string, visited map[string]bool, appended map[string]bool, path []string, queue *Queue, parent map[string]string) []string {
 	if currentPage == targetPage {
 		path := []string{currentPage}
-			for currentPage != startPage {
-				currentPage = parent[currentPage]
-				path = append([]string{currentPage}, path...)
-			}
+		for currentPage != startPage {
+			currentPage = parent[currentPage]
+			path = append([]string{currentPage}, path...)
+		}
 		return path
 	}
+	fmt.Println(currentPage)
 
 	visited[currentPage] = true
 
@@ -36,7 +37,7 @@ func breadthFirstSearch(startPage string, currentPage string, targetPage string,
 		}
 	}
 
-	if !queue.QueueEmpty(){
+	if !queue.QueueEmpty() {
 		frontLink := queue.Dequeue()
 		path = append(path, frontLink)
 		result := breadthFirstSearch(startPage, frontLink, targetPage, visited, appended, path, queue, parent)
@@ -44,7 +45,7 @@ func breadthFirstSearch(startPage string, currentPage string, targetPage string,
 			return result
 		}
 	}
-	
+
 	// Unmark klo gajadi path
 	visited[currentPage] = false
 
@@ -53,8 +54,8 @@ func breadthFirstSearch(startPage string, currentPage string, targetPage string,
 }
 
 func main() {
-	startPage := "Joko_Widodo"
-	targetPage := "Solo_River"
+	startPage := "Joko Widodo"
+	targetPage := "Jusuf_Kalla"
 	q := NewQueue()
 	visited := make(map[string]bool)
 	appended := make(map[string]bool)
@@ -63,9 +64,10 @@ func main() {
 	start := time.Now()
 
 	path := breadthFirstSearch(startPage, startPage, targetPage, visited, appended, []string{startPage}, q, parent)
+	fmt.Println("Hasil", path)
 	duration := time.Since(start)
 	if path != nil {
-		fmt.Println("Path yang ditemukan:")
+		fmt.Println("Path yang ditemukan:", len(path))
 		for _, page := range path {
 			fmt.Println(page)
 		}

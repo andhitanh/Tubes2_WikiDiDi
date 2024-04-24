@@ -45,16 +45,3 @@ func getLinks(pageTitle string) ([]string, error) {
 	}
 	return links, nil
 }
-
-// func main() {
-// 	links, err := getLinks("Earth")
-// 	if err != nil {
-// 		fmt.Println("Error:", err)
-// 		return
-// 	}
-// 	fmt.Println("Links:")
-
-// 	for _, link := range links {
-// 		fmt.Println(link)
-// 	}
-// }

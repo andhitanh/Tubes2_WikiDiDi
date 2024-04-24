@@ -49,11 +49,6 @@
     font-family: 'Playfair Display', serif;
     outline: none;
 }
-/* .sub-search{
-  display: flex;
-  flex-direction: column;
-  font-size: 18px;
-} */
 
 .body-content .sub-search {
   display: flex;
@@ -65,4 +60,15 @@
 
 .sub-search > p {
   margin: 0 10px; /* Jarak antara SearchBar dan SearchResultList */
+}
+.roket {
+  width: 100px;
+  height: 200px;
+  flex-direction: row;
+  height: fit-content;
+  background-color: beige;
+  border: 1.5px solid black;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: center;
 }

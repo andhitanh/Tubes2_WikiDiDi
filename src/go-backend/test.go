@@ -1,15 +1,15 @@
 package main
 
 import (
-	"fmt"
-	"github.com/PuerkitoBio/goquery"
-	"strings"
-	"time"
-	"net/url"
 	"errors"
+	"fmt"
+	"net/url"
+	"strings"
 	"sync"
-)
+	"time"
 
+	"github.com/PuerkitoBio/goquery"
+)
 
 var cache = struct {
 	sync.RWMutex
@@ -73,7 +73,7 @@ func depthLimitedSearch(currentPage string, targetPage string, depthLimit int, v
 	}
 
 	if currentPage == targetPage {
-		return path 
+		return path
 	}
 
 	//mark yg udah dikunjungi
@@ -119,12 +119,13 @@ func iterativeDeepeningWikirace(startPage string, targetPage string, maxDepth in
 func main() {
 	startPage := "Joko_Widodo"
 	targetPage := "Prabowo_Subianto"
-	maxDepth := 5
+	maxDepth := 10
 
 	start := time.Now()
 
 	path := iterativeDeepeningWikirace(startPage, targetPage, maxDepth)
 	duration := time.Since(start)
+	fmt.Println("Hasil", path)
 	if path != nil {
 		fmt.Println("Path found:")
 		for _, page := range path {
