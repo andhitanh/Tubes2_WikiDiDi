@@ -1,0 +1,9 @@
+.results-list{
+    background-color: beige;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 0 1px black, 0 0 0 1px white;
+    margin-top:1rem ;
+    border-radius: 10px;
+    overflow-y: scroll;
+}
