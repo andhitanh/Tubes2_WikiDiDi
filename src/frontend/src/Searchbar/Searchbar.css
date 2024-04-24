@@ -4,9 +4,10 @@
     align-items: center;
     justify-content: center;
     background-color: #B29DE8; /* Warna latar belakang ungu */
-    border: 10px solid black; /* Garis luar hitam */
     border-radius: 5px; /* Sudut bulat */
     padding: 8px; 
 }
-
+.input :focus {
+    outline: none;
+}
   

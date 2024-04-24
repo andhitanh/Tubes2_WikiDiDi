@@ -13,6 +13,7 @@
     background-color: #fff;
   }
 .body-content{
+    align-items: flex-start;
     justify-content: space-between;
     display: flex;
     flex-direction: row;
@@ -25,5 +26,32 @@
 }
 
 .body-content p {
-  margin: 0 10px; /* Menambahkan jarak antara teks "To" dan komponen SearchBar */
+  margin: 0 30px; /* Menambahkan jarak antara teks "To" dan komponen SearchBar */
+}
+
+.search-section{
+    align-items: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #B29DE8; /* Warna latar belakang ungu */
+    border: 1.5px solid black; /* Garis luar hitam */ /* Sudut bulat */
+    padding: 8px;
+    width: 275px;
+    height: 30px;
+}
+
+.search-section input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: #B29DE8; /* Warna latar belakang ungu */
+    font-size: 16px;
+    font-family: 'Playfair Display', serif;
+    outline: none;
+}
+.sub-search{
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
 }
