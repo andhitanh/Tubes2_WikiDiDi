@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import './Searchbar.css'; // Import file CSS untuk styling SearchBar
+import axios from 'axios'; // Import axios untuk melakukan HTTP request
 const SearchBar = ({setResults}) => {
   const [input, setInput] = useState('');
   const fetchData =  (value)=>{
@@ -12,6 +13,23 @@ const SearchBar = ({setResults}) => {
       setResults(results);
     })
   }
+
+  // masih error gais
+  // const fetchData = async (value) => {
+  //   try {
+  //     // Fetch data from Wikipedia API
+  //     const response = await axios.get(
+  //       `https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=${value}`
+  //     );
+  //     // Extract search results from the response
+  //     const searchResults = response.data.query.search;
+  //     // Set search results in state
+  //     setResults(searchResults);
+  //   } catch (error) {
+  //     console.error('Error fetching search results:', error);
+  //   }
+  // };
+
   const handleChanges = (value) => {
     setInput(value);
     fetchData(value);

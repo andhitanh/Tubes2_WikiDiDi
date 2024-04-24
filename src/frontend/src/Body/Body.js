@@ -21,7 +21,8 @@ const Body = () => {
     <div className="body-container">
         <div className="body-content">
           {searchData.map((searchItem, index) => (
-              <React.Fragment key={searchItem.id}>
+            <React.Fragment key={searchItem.id}>
+              <div className="sub-search">
                 <SearchBar
                   id={searchItem.id}
                   setResults={(results) =>
@@ -29,9 +30,10 @@ const Body = () => {
                   }
                 />
                 <SearchResultList results={searchItem.results} />
-                {index < searchData.length - 1 && <p>to</p>}
-              </React.Fragment>
-            ))}
+              </div>
+              {index < searchData.length - 1 && <p>to</p>}
+            </React.Fragment>
+          ))}
             {/* <div className='sub-search'>
               <SearchBar setResults={setResults}/>
               <SearchResultList results={results}/>
