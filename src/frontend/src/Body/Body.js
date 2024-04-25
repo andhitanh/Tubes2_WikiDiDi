@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import './Body.css'; // Import file CSS untuk styling Body
 import SearchBar from '../Searchbar/Searchbar'; // Import SearchBar component
 import SearchResultList from '../Searchbar/SearchResultList';
+import BfsTest from './BfsTest';
+
 // import { breadthFirstSearch} from '../../../go-backend/bfsweb.go'; 
 // import { iterativeDeepeningWikirace } from '../../../go-backend/test.go';
 
@@ -28,18 +30,41 @@ const Body = () => {
 
 
   const handleGoButtonClick = () => {
+
     const maxDepth = 10;
     // Tentukan targetPage dari input SearchBar kanan (indeks 1)
     const targetPage = searchData[1].input;
 
+    const fetchData = async () => {
+      try {
+        // Memuat modul WebAssembly
+        const go = new global.Go();
+        const wasmPath = process.env.PUBLIC_URL + '/bfsweb.wasm';
+        const response = await fetch(wasmPath);
+        const buffer = await response.arrayBuffer();
+        const { instance } = await WebAssembly.instantiate(buffer, go.importObject);
+
+        // Panggil fungsi BFS dari modul WebAssembly
+        const { breadthFirstSearch } = instance.exports;
+        breadthFirstSearch("parameter_input");
+      } catch (error) {
+        console.error('Error loading WebAssembly module:', error);
+      }
+    };
+
+    fetchData();
+   
+ 
+     // Catatan: Ganti "parameter_input" dengan nilai yang Anda inginkan untuk parameter BFS Anda
+
     // Panggil fungsi pencarian yang sesuai berdasarkan jenis algoritma yang dipilih
-    if (searchAlgorithm === 'BFS') {
-      // Panggil fungsi BFS dengan startPage dari input SearchBar kiri (indeks 0) dan targetPage
-      // breadthFirstSearch(searchData[0].input, targetPage);
-    } else if (searchAlgorithm === 'IDS') {
-      // Panggil fungsi IDS dengan startPage dari input SearchBar kiri (indeks 0) dan targetPage
-      // iterativeDeepeningWikirace(searchData[0].input, targetPage, maxDepth);
-    }
+    // if (searchAlgorithm === 'BFS') {
+    //   // Panggil fungsi BFS dengan startPage dari input SearchBar kiri (indeks 0) dan targetPage
+    //   // breadthFirstSearch(searchData[0].input, targetPage);
+    // } else if (searchAlgorithm === 'IDS') {
+    //   // Panggil fungsi IDS dengan startPage dari input SearchBar kiri (indeks 0) dan targetPage
+    //   // iterativeDeepeningWikirace(searchData[0].input, targetPage, maxDepth);
+    // }
   };
 
   return (
@@ -60,31 +85,11 @@ const Body = () => {
             </React.Fragment>
           ))}
         </div>
-        <div className="roket">
-          <p>GO</p>
-          {/* <img src="../assets/roket.png" alt="roket" /> */}
-          <div className="algorithm-switch">
-            <label>
-              BFS
-              <input
-                type="radio"
-                value="bfs"
-                checked={searchAlgorithm === 'bfs'}
-                onChange={() => setSearchAlgorithm('bfs')}
-              />
-            </label>
-            <label>
-              IDS
-              <input
-                type="radio"
-                value="ids"
-                checked={searchAlgorithm === 'ids'}
-                onChange={() => setSearchAlgorithm('ids')}
-              />
-            </label>
-          </div>
-          <button onClick={handleGoButtonClick}>Go</button>
+        <div className='option-algo'>
+          <BfsTest />
+          <BfsTest />
         </div>
+        
     </div>
   );
 }

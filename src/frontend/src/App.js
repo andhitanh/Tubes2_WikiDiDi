@@ -8,7 +8,7 @@ const NavLinks = () => {
         <div className='nav-links'>
             <a href="/aboutus" className="nav-link">About Us</a>
             <span className="separator"> | </span> 
-            <a href="/github" className="nav-link">Github</a>
+            <a href="https://github.com/andhitanh/Tubes2_WikiDiDi" className="nav-link" target="_blank" rel="noopener noreferrer">Github</a>
         </div>
     );
 }

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -53,8 +55,9 @@ func breadthFirstSearch(startPage string, currentPage string, targetPage string,
 	// output: list of hyperlink yg jadi path atau nil klo gak ketemu
 }
 
-func main() {
-	startPage := "Joko Widodo"
+// Fungsi handler suntuk penanganan permintaan BFS
+func bfsHandler(w http.ResponseWriter, r *http.Request) {
+	startPage := "Joko_Widodo"
 	targetPage := "Jusuf_Kalla"
 	q := NewQueue()
 	visited := make(map[string]bool)
@@ -77,4 +80,16 @@ func main() {
 	}
 
 	fmt.Println("Durasi:", duration)
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	// Mengirimkan respon JSON ke frontend
+	json.NewEncoder(w).Encode(path)
+}
+
+// Fungsi main untuk menjalankan server HTTP
+func main() {
+	http.HandleFunc("/bfs", bfsHandler)
+	fmt.Println("Server started at :8000")
+	http.ListenAndServe(":8000", nil)
 }
