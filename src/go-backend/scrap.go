@@ -28,7 +28,7 @@ func getLinks(pageTitle string) ([]string, error) {
 			}
 
 			// Check if the link is a Wikipedia internal link and does not contain ":" or "."
-			if strings.HasPrefix(parsedLink.Path, "/wiki/") && !strings.Contains(parsedLink.Path, ":") && !strings.Contains(parsedLink.Path, ".") {
+			if parsedLink.Host == "" && strings.HasPrefix(parsedLink.Path, "/wiki/") && !strings.Contains(parsedLink.Path, ":") && !strings.Contains(parsedLink.Path, ".") {
 				// Decode the path to handle encoded characters
 				decodedPath, err := url.PathUnescape(parsedLink.Path)
 				if err != nil {
