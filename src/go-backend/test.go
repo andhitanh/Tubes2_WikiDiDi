@@ -6,7 +6,7 @@ import (
 	// "net/url"
 	// "strings"
 	"sync"
-	// "time"
+	"time"
 	// "github.com/PuerkitoBio/goquery"
 )
 
@@ -66,7 +66,7 @@ var cacheLinks = struct {
 // 	return links, nil
 // }
 
-func depthLimitedSearch(currentPage string, targetPage string, depthLimit int, visited map[string]bool, path []string) []string {
+func depthLimitedSearch(currentPage string, targetPage string, depthLimit int, visited map[string]bool, path []string, total_visit map[string]int) []string {
 	if depthLimit == 0 {
 		return nil
 	}
@@ -77,6 +77,8 @@ func depthLimitedSearch(currentPage string, targetPage string, depthLimit int, v
 
 	//mark yg udah dikunjungi
 	visited[currentPage] = true
+	//hitung jumlah page yang dilalui
+	total_visit[currentPage] += 1
 
 	links, err := getLinks(currentPage)
 	// fmt.Println(links)
@@ -88,7 +90,7 @@ func depthLimitedSearch(currentPage string, targetPage string, depthLimit int, v
 	for _, link := range links {
 		if !visited[link] {
 			newPath := append(path, link)
-			result := depthLimitedSearch(link, targetPage, depthLimit-1, visited, newPath)
+			result := depthLimitedSearch(link, targetPage, depthLimit-1, visited, newPath, total_visit)
 			if result != nil {
 				return result
 			}
@@ -102,37 +104,44 @@ func depthLimitedSearch(currentPage string, targetPage string, depthLimit int, v
 	// output: list of hyperlink yg jadi path atau nil klo gak ketemu
 }
 
-func iterativeDeepeningWikirace(startPage string, targetPage string, maxDepth int) []string {
+func iterativeDeepeningWikirace(startPage string, targetPage string, maxDepth int) ([]string, int) {
 	for depth := 1; depth <= maxDepth; depth++ {
 		fmt.Println("Depth: ", depth-1, "...")
 		visited := make(map[string]bool)
-		path := depthLimitedSearch(startPage, targetPage, depth, visited, []string{startPage})
+		total_visit := make(map[string]int)
+		path := depthLimitedSearch(startPage, targetPage, depth, visited, []string{startPage}, total_visit)
 		if path != nil {
 			fmt.Println(path)
-			return path
+			total := 0
+			for _, value := range total_visit {
+				total += value
+			}
+			return path, total
 		}
 	}
-	return nil
+	return nil, 0
+} //returnya path hasil akhir, total page yang dicek seluruhnya
+
+func main() {
+	startPage := "Joko_Widodo"
+	targetPage := "Prabowo_Subianto"
+	maxDepth := 10
+
+	start := time.Now()
+
+	path, total_visit := iterativeDeepeningWikirace(startPage, targetPage, maxDepth)
+	duration := time.Since(start)
+	fmt.Println("Hasil", path)
+	if path != nil {
+		fmt.Println("Path found:")
+		for _, page := range path {
+			fmt.Println(page)
+		}
+		fmt.Print("Total pages: ")
+		fmt.Println(total_visit)
+	} else {
+		fmt.Println("Path not found karena depth limit.")
+	}
+
+	fmt.Println("Durasi:", duration)
 }
-
-// func main() {
-// 	startPage := "Joko_Widodo"
-// 	targetPage := "Prabowo_Subianto"
-// 	maxDepth := 10
-
-// 	start := time.Now()
-
-// 	path := iterativeDeepeningWikirace(startPage, targetPage, maxDepth)
-// 	duration := time.Since(start)
-// 	fmt.Println("Hasil", path)
-// 	if path != nil {
-// 		fmt.Println("Path found:")
-// 		for _, page := range path {
-// 			fmt.Println(page)
-// 		}
-// 	} else {
-// 		fmt.Println("Path not found karena depth limit.")
-// 	}
-
-// 	fmt.Println("Durasi:", duration)
-// }
