@@ -1,14 +1,13 @@
 package main
 
 import (
-	"errors"
+	// "errors"
 	"fmt"
-	"net/url"
-	"strings"
+	// "net/url"
+	// "strings"
 	"sync"
-	"time"
-
-	"github.com/PuerkitoBio/goquery"
+	// "time"
+	// "github.com/PuerkitoBio/goquery"
 )
 
 var cache = struct {
@@ -21,51 +20,51 @@ var cacheLinks = struct {
 	data map[string]bool
 }{data: make(map[string]bool)}
 
-// get link tanpa filter
-func getLinks(pageTitle string) ([]string, error) {
-	urlString := "https://en.wikipedia.org/wiki/" + pageTitle
-	doc, err := goquery.NewDocument(urlString)
-	if err != nil {
-		return nil, err
-	}
+// // get link tanpa filter
+// func getLinks(pageTitle string) ([]string, error) {
+// 	urlString := "https://en.wikipedia.org/wiki/" + pageTitle
+// 	doc, err := goquery.NewDocument(urlString)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	var links []string
-	doc.Find("#mw-content-text a").Each(func(i int, s *goquery.Selection) {
-		link, exists := s.Attr("href")
-		if exists {
-			// Parse the link to handle encoded characters properly
-			parsedLink, err := url.Parse(link)
-			if err != nil {
-				fmt.Println("Error parsing link:", err)
-				return
-			}
+// 	var links []string
+// 	doc.Find("#mw-content-text a").Each(func(i int, s *goquery.Selection) {
+// 		link, exists := s.Attr("href")
+// 		if exists {
+// 			// Parse the link to handle encoded characters properly
+// 			parsedLink, err := url.Parse(link)
+// 			if err != nil {
+// 				fmt.Println("Error parsing link:", err)
+// 				return
+// 			}
 
-			// Check if the link is a Wikipedia internal link and does not contain ":" or "."
-			if strings.HasPrefix(parsedLink.Path, "/wiki/") && !strings.Contains(parsedLink.Path, ":") && !strings.Contains(parsedLink.Path, ".") {
-				// Decode the path to handle encoded characters
-				decodedPath, err := url.PathUnescape(parsedLink.Path)
-				if err != nil {
-					fmt.Println("Error decoding link path:", err)
-					return
-				}
-				links = append(links, strings.TrimPrefix(decodedPath, "/wiki/"))
-			}
-		}
-	})
-	if len(links) == 0 {
-		return nil, errors.New("no valid links found")
-	}
+// 			// Check if the link is a Wikipedia internal link and does not contain ":" or "."
+// 			if strings.HasPrefix(parsedLink.Path, "/wiki/") && !strings.Contains(parsedLink.Path, ":") && !strings.Contains(parsedLink.Path, ".") {
+// 				// Decode the path to handle encoded characters
+// 				decodedPath, err := url.PathUnescape(parsedLink.Path)
+// 				if err != nil {
+// 					fmt.Println("Error decoding link path:", err)
+// 					return
+// 				}
+// 				links = append(links, strings.TrimPrefix(decodedPath, "/wiki/"))
+// 			}
+// 		}
+// 	})
+// 	if len(links) == 0 {
+// 		return nil, errors.New("no valid links found")
+// 	}
 
-	cacheLinks.Lock()
-	cacheLinks.data[pageTitle] = true
-	cacheLinks.Unlock()
+// 	cacheLinks.Lock()
+// 	cacheLinks.data[pageTitle] = true
+// 	cacheLinks.Unlock()
 
-	cache.Lock()
-	cache.data[pageTitle] = links
-	cache.Unlock()
+// 	cache.Lock()
+// 	cache.data[pageTitle] = links
+// 	cache.Unlock()
 
-	return links, nil
-}
+// 	return links, nil
+// }
 
 func depthLimitedSearch(currentPage string, targetPage string, depthLimit int, visited map[string]bool, path []string) []string {
 	if depthLimit == 0 {
@@ -116,24 +115,24 @@ func iterativeDeepeningWikirace(startPage string, targetPage string, maxDepth in
 	return nil
 }
 
-func main() {
-	startPage := "Joko_Widodo"
-	targetPage := "Prabowo_Subianto"
-	maxDepth := 10
+// func main() {
+// 	startPage := "Joko_Widodo"
+// 	targetPage := "Prabowo_Subianto"
+// 	maxDepth := 10
 
-	start := time.Now()
+// 	start := time.Now()
 
-	path := iterativeDeepeningWikirace(startPage, targetPage, maxDepth)
-	duration := time.Since(start)
-	fmt.Println("Hasil", path)
-	if path != nil {
-		fmt.Println("Path found:")
-		for _, page := range path {
-			fmt.Println(page)
-		}
-	} else {
-		fmt.Println("Path not found karena depth limit.")
-	}
+// 	path := iterativeDeepeningWikirace(startPage, targetPage, maxDepth)
+// 	duration := time.Since(start)
+// 	fmt.Println("Hasil", path)
+// 	if path != nil {
+// 		fmt.Println("Path found:")
+// 		for _, page := range path {
+// 			fmt.Println(page)
+// 		}
+// 	} else {
+// 		fmt.Println("Path not found karena depth limit.")
+// 	}
 
-	fmt.Println("Durasi:", duration)
-}
+// 	fmt.Println("Durasi:", duration)
+// }

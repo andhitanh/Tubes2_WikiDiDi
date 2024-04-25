@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import './Body.css'; // Import file CSS untuk styling Body
 import SearchBar from '../Searchbar/Searchbar'; // Import SearchBar component
 import SearchResultList from '../Searchbar/SearchResultList';
-import BfsTest from './BfsTest';
+import Bfs from './Bfs';
+import Ids from './Ids';
 
 // import { breadthFirstSearch} from '../../../go-backend/bfsweb.go'; 
 // import { iterativeDeepeningWikirace } from '../../../go-backend/test.go';
@@ -86,8 +87,8 @@ const Body = () => {
           ))}
         </div>
         <div className='option-algo'>
-          <BfsTest />
-          <BfsTest />
+          <Bfs />
+          <Ids/>
         </div>
         
     </div>

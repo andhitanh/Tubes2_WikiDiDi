@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import * as d3 from 'd3';
-import './BfsTest.css';
+import './Bfs.css';
 
 const BfsTest = () => {
   const [result, setResult] = useState(null);
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
-    drawGraph();
-  }, [result]);
+    if (result && Array.isArray(result)) {
+        drawGraph();
+    }
+}, [result]);
 
   const drawGraph = () => {
     const width = 800;
@@ -95,13 +97,13 @@ const BfsTest = () => {
     <div className='graph' >
         <button className='button-bfs' onClick={handleBfsRequest}>GO BFS</button>
         {history.length > 0 && (
-            <li key={0}>{history[0].join(' -> ').replace(/,/g, ' -> ')}</li>
+          <li>{JSON.stringify(history[0])}</li>
         )}
         <h3>Recent BFS Requests</h3>
         <ul>
             {history.slice(1).map((path, index) => (
-            // <li key={index}>{JSON.stringify(path)}</li>
-            <li key={index}>{path.join(' -> ').replace(/,/g, ' -> ')}</li>
+            <li key={index}>{JSON.stringify(path)}</li>
+            // <li key={index}>{path.join(' -> ').replace(/,/g, ' -> ')}</li>
             ))}
             
         </ul>
