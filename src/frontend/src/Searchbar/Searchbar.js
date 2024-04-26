@@ -5,7 +5,7 @@ import 'jquery-ui/ui/widgets/autocomplete';
 import 'jquery-ui/themes/base/theme.css';
 import './Searchbar.css';
 
-const SearchBar2 = () => {
+const SearchBar = () => {
     const [input, setInput] = useState('');
     const [results, setResults] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
@@ -51,9 +51,9 @@ const SearchBar2 = () => {
     };      
     const handleSubmit = (e) => {
         e.preventDefault();
-        // setResults(input);
-        // 
-        axios.post('http://localhost:8000/inputstart', { input: input })
+        setResults(input);
+        console.log('input:', input);
+        axios.post('http://localhost:8000/api/inputstart', { input: input })
         .then(() => {
             console.log('input start sent to backend:', input);
         })
@@ -92,4 +92,4 @@ const SearchBar2 = () => {
     );
 };
 
-export default SearchBar2;
+export default SearchBar;

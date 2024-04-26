@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLongArrowAltRight } from '@fortawesome/free-solid-svg-icons'
 import * as d3 from 'd3';
-import './Ids.css';
+import './Bfs.css';
 
 const IdsTest = () => {
   const [result, setResult] = useState(null);
@@ -113,7 +113,8 @@ const IdsTest = () => {
             <p>
               Found <strong>{history[0]["path"].length - 1}</strong> degrees of separation from{" "}
               <strong>{history[0]["path"][0]}</strong> to{" "}
-              <strong>{history[0]["path"][history[0]["path"].length - 1]}</strong> in{" "}
+              <strong>{history[0]["path"][history[0]["path"].length - 1]}</strong>{" "}that visited{" "}
+              <strong>{history[0]["visited"]}</strong>{" "} links in{" "}
               <strong>{history[0]["duration"].toFixed(2)}</strong> seconds!
               <p></p>
               <div className='contain'>
@@ -155,7 +156,6 @@ const IdsTest = () => {
                 </p>
               // <li key={index}>{path.join(' -> ').replace(/,/g, ' -> ')}</li>
               ))}
-              
           </ul>
           </div>
     </div>

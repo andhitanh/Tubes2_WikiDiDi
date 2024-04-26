@@ -112,7 +112,8 @@ const BfsTest = () => {
             <p>
               Found <strong>{history[0]["path"].length - 1}</strong> degrees of separation from{" "}
               <strong>{history[0]["path"][0]}</strong> to{" "}
-              <strong>{history[0]["path"][history[0]["path"].length - 1]}</strong> in{" "}
+              <strong>{history[0]["path"][history[0]["path"].length - 1]}</strong>{" "}that visited{" "}
+              <strong>{history[0]["visited"]}</strong>{" "} links in{" "}
               <strong>{history[0]["duration"].toFixed(2)}</strong> seconds!
               <p></p>
               <div className='contain'>
