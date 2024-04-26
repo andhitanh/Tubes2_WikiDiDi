@@ -6,8 +6,6 @@ import SearchResultList from '../Searchbar/SearchResultList';
 import Bfs from './Bfs';
 import Ids from './Ids';
 
-// import { breadthFirstSearch} from '../../../go-backend/bfsweb.go'; 
-// import { iterativeDeepeningWikirace } from '../../../go-backend/test.go';
 
 const Body = () => {
   const [results, setResults] = useState([]);
@@ -75,12 +73,21 @@ const Body = () => {
           {searchData.map((searchItem, index) => (
             <React.Fragment key={searchItem.id}>
               <div className="sub-search">
-                <SearchBar2
-                  id={searchItem.id}
-                  setResults={(results) =>
-                    handleSearchChange(searchItem.id, searchItem.input, results)
-                  }
-                />
+              {searchItem.id === 0 ? (
+                  <SearchBar
+                    id={searchItem.id}
+                    setResults={(results) =>
+                      handleSearchChange(searchItem.id, searchItem.input, results)
+                    }
+                  />
+                ) : (
+                  <SearchBar2
+                    id={searchItem.id}
+                    setResults={(results) =>
+                      handleSearchChange(searchItem.id, searchItem.input, results)
+                    }
+                  />
+                )}
                 <SearchResultList results={searchItem.results} />
               </div>
               {index < searchData.length - 1 && <p>to</p>}
@@ -91,7 +98,6 @@ const Body = () => {
           <Bfs />
           <Ids/>
         </div>
-        
     </div>
   );
 }

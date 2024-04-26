@@ -117,12 +117,13 @@ func idsHandler(w http.ResponseWriter, r *http.Request) {
 
 	start := time.Now()
 
-	path := iterativeDeepeningWikirace(startPage, targetPage, maxDepth)
+	path, visited := iterativeDeepeningWikirace(startPage, targetPage, maxDepth)
 	duration := time.Since(start)
 
 	response := map[string]interface{}{
 		"path":     path,
 		"duration": duration.Seconds(), // Konversi durasi menjadi detik
+		"visited":  visited,
 	}
 
 	if path != nil {
@@ -139,6 +140,7 @@ func idsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	// Mengirimkan respon JSON ke frontend
+	fmt.Println(response)
 	json.NewEncoder(w).Encode(response)
 }
 

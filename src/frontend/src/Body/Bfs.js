@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLongArrowAltRight } from '@fortawesome/free-solid-svg-icons';
 import * as d3 from 'd3';
 import './Bfs.css';
 
@@ -7,29 +9,31 @@ const BfsTest = () => {
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
-    if (result && Array.isArray(result)) {
+    if (result && result.path && Array.isArray(result.path)) {
         drawGraph();
     }
-}, [result]);
+  }, [result]);
 
   const drawGraph = () => {
-    const width = 800;
-    const height = 400;
+    const width =400;
+    const height = 100;
 
-    const svg = d3.select('#graph-container').selectAll('*').remove()// Remove previous graph elements
+    d3.select('#graph-container').selectAll('*').remove();
+    const svg = d3.select('#graph-container')
       .append('svg')
       .attr('width', width)
       .attr('height', height);
 
-    if (!result) return;
-
-    const nodes = result.map((article, index) => ({ id: index, name: article }));
-    const links = result.slice(1).map((article, index) => ({ source: index, target: index + 1 }));
-
+    if (!result || result.path.length < 2) return; // Periksa apakah hasil BFS tersedia dan memiliki setidaknya dua node
+    console.log(result.path[0]);
+    const nodes = result.path.map((article, index) => ({ id: index, name: article }));
+    console.log(nodes);
+    const links = result.path.slice(1).map((article, index) => ({ source: index, target: index + 1 }));
+    console.log(links);
     const simulation = d3.forceSimulation(nodes)
       .force('link', d3.forceLink(links).id(d => d.id))
       .force('charge', d3.forceManyBody())
-      .force('center', d3.forceCenter(width / 2, height / 2));
+      .force('center', d3.forceCenter(width/2 , height /2));
 
     const link = svg.append('g')
       .attr('stroke', '#999')
@@ -44,21 +48,24 @@ const BfsTest = () => {
       .selectAll('circle')
       .data(nodes)
       .join('circle')
+      .join('text')
+      .attr('x', d => d.x)
+      .attr('y', d => d.y)
+      .text(d => d.name)
       .attr('r', 5)
       .attr('fill', '#000');
 
-    // Tambahkan label nama pada setiap node
-    node.append('title')
-      .text(d => d.name);
-
-    // Tambahkan teks nama pada setiap node
-    svg.append('g')
-      .selectAll('text')
-      .data(nodes)
-      .join('text')
-      .attr('x', d => d.x + 10)
-      .attr('y', d => d.y)
-      .text(d => d.name);
+    // // // Tambahkan label nama pada setiap node
+    // node.append('title')
+    //   .text(d => d.name);
+    // // Tambahkan teks nama pada setiap node
+    // svg.append('g')
+    //   .selectAll('text')
+    //   .data(nodes)
+    //   .join('text')
+    //   .attr('x', d => d.x + 10)
+    //   .attr('y', d => d.y)
+    //   .text(d => d.name);
 
     simulation.on('tick', () => {
       link
@@ -82,6 +89,7 @@ const BfsTest = () => {
     try {
         const response = await fetch('http://localhost:8000/bfs');
         const result = await response.json();
+        console.log(result);
         setResult(result);
         setHistory(prev => {
         const updatedHistory = [result, ...prev]; // Tambahkan permintaan BFS terbaru ke awal array
@@ -96,17 +104,59 @@ const BfsTest = () => {
   return (
     <div className='graph' >
         <button className='button-bfs' onClick={handleBfsRequest}>GO BFS</button>
-        {history.length > 0 && (
-          <li>{JSON.stringify(history[0])}</li>
+        {result && result.path && (
+          <div id="graph-container" className="graph-content"></div>
         )}
-        <h3>Recent BFS Requests</h3>
-        <ul>
-            {history.slice(1).map((path, index) => (
-            <li key={index}>{JSON.stringify(path)}</li>
-            // <li key={index}>{path.join(' -> ').replace(/,/g, ' -> ')}</li>
-            ))}
-            
-        </ul>
+        { result && result.path && history.length > 0 && (
+          <div className=' graph-container'>
+            <p>
+              Found <strong>{history[0]["path"].length - 1}</strong> degrees of separation from{" "}
+              <strong>{history[0]["path"][0]}</strong> to{" "}
+              <strong>{history[0]["path"][history[0]["path"].length - 1]}</strong> in{" "}
+              <strong>{history[0]["duration"].toFixed(2)}</strong> seconds!
+              <p></p>
+              <div className='contain'>
+
+                {history.length > 0 && (
+                  <li>
+                    {/* {history[0].path.join(' ->')} */}
+                    <span>
+                      {history[0].path.map((node, index) => (
+                        <React.Fragment key={index}>
+                          {node.replace(/_/g, ' ')}
+                          {index < history[0].path.length - 1 && (
+                          <>
+                            &nbsp;
+                            <FontAwesomeIcon icon={faLongArrowAltRight} style={{ fontSize: '0.8em' }} />
+                            &nbsp; 
+                          </>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </span>
+                  </li>
+                )}
+              </div>
+            </p>
+          </div>
+        )}
+        <div className='recent-req'>
+
+          <h3>Recent BFS Requests</h3>
+          <ul>
+              {history.slice(1).map((path, index) => (
+              // <li key={index}>{JSON.stringify(path)}</li>
+                <p>
+                  Found <strong>{history[index]["path"].length - 1}</strong> degrees of separation from{" "}
+                  <strong>{history[index]["path"][0]}</strong> to{" "}
+                  <strong>{history[index]["path"][history[index]["path"].length - 1]}</strong> in{" "}
+                  <strong>{history[index]["duration"].toFixed(2)}</strong> seconds!
+                </p>
+              // <li key={index}>{path.join(' -> ').replace(/,/g, ' -> ')}</li>
+              ))}
+              
+          </ul>
+        </div>
     </div>
   );
 };

@@ -33,6 +33,11 @@ const SearchBar2 = () => {
                 }
             });
         };
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.ui-autocomplete').length) {
+                $('.searchClass').autocomplete('close');
+            }
+        });
 
         $(document).ready(() => {
             initializeAutocomplete();
@@ -48,9 +53,9 @@ const SearchBar2 = () => {
         e.preventDefault();
         // setResults(input);
         // 
-        axios.post('http://localhost:8000/inputstart', { input: input })
+        axios.post('http://localhost:8000/inputtarget', { input: input })
         .then(() => {
-            console.log('input sent to backend:', input);
+            console.log('input target sent to backend:', input);
         })
         .catch((error) => {
             console.error('Error sending data to backend:', error);
@@ -58,38 +63,31 @@ const SearchBar2 = () => {
     };
     
     const handleSuggestionClick = (suggestion) => {
-    setInput(suggestion);
-    setSuggestions([]);
-    setResults(suggestion);
+        setInput(suggestion);
+        setSuggestions([]);
+        setResults(suggestion);
     };
     return (
         <div className="search-section">
-        <form onSubmit={handleSubmit}>
-            <input
-            type="text"
-            className="search-bar searchClass"
-            placeholder="Search..."
-            value={input}
-            onChange={handleInputChange}
-            />
-            <button type="submit" className="go-button">
-            Go
-            </button>
-        </form>
-        {/* <input
-            type="text"
-            className="search-bar searchClass"
-            placeholder="Search..."
-            value={input}
-            onChange={handleInputChange}
-        /> */}
-        <ul className="suggestions-list">
-            {suggestions.map((suggestion, index) => (
-            <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-                {suggestion}
-            </li>
-            ))}
-        </ul>
+            <form onSubmit={handleSubmit}>
+                <input
+                type="text"
+                className="search-bar searchClass"
+                placeholder="Search..."
+                value={input}
+                onChange={handleInputChange}
+                />
+                <button type="submit" className="go-button">
+                Go
+                </button>
+            </form>
+            <ul className="suggestions-list">
+                {suggestions.map((suggestion, index) => (
+                <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                    {suggestion}
+                </li>
+                ))}
+            </ul>
         </div>
     );
 };

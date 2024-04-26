@@ -1,128 +1,95 @@
-import React, {useState, useEffect} from 'react';
-import './Searchbar.css'; // Import file CSS untuk styling SearchBar
-import axios from 'axios'; // Import axios untuk melakukan HTTP request
-const SearchBar = ({setResults}) => {
-  const [input, setInput] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
+import React, { useEffect , useState} from 'react';
+import axios from 'axios';
+import $ from 'jquery';
+import 'jquery-ui/ui/widgets/autocomplete';
+import 'jquery-ui/themes/base/theme.css';
+import './Searchbar.css';
 
-  useEffect(() => {
-    if (input) {
-      fetchSuggestions(input);
-    } else {
-      setSuggestions([]);
-    }
-  }, [input]);
-  const fetchSuggestions = async (value) => {
-    try {
-      const response = await axios.get(
-        `https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=${value}`
-      );
-      setSuggestions(response.data[1]);
-    } catch (error) {
-      console.error('Error fetching suggestions:', error);
-    }
-  };
+const SearchBar2 = () => {
+    const [input, setInput] = useState('');
+    const [results, setResults] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    useEffect(() => {
+        const initializeAutocomplete = () => {
+            $(".searchClass").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "http://en.wikipedia.org/w/api.php",
+                        dataType: "jsonp",
+                        data: {
+                            action: "opensearch",
+                            format: "json",
+                            search: request.term,
+                            namespace: 0,
+                            limit: 8,
+                        },
+                        success: function (data) {
+                            response(data[1]);
+                        },
+                    });
+                },
+                select: function (event, ui) {
+                    handleSuggestionClick(ui.item.value);
+                }
+            });
+        };
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.ui-autocomplete').length) {
+                $('.searchClass').autocomplete('close');
+            }
+        });
 
-  const handleInputChange = (e) => {
-    setInput(e.target.value);
-  };
+        $(document).ready(() => {
+            initializeAutocomplete();
+        });
+    }, []);
 
-  const handleSuggestionClick = (value) => {
-    setInput(value);
-    setResults([]);
-    fetchSuggestions(value); // Refetch suggestions when a suggestion is clicked
-  };
-  // const fetchData =  (value)=>{
-  //   fetch("https://jsonplaceholder.typicode.com/users")
-  //   .then((response)=>response.json())
-  //   .then((json)=>{
-  //     const results = json.filter((user)=>{
-  //       return value && user && user.name.toLowerCase().includes(value);
-  //     });
-  //     setResults(results);
-  //   })
-  // }
-   // jQuery autocomplete functionality
-  //  $(document).ready(function () {
-  //   $(".search-bar").autocomplete({
-  //     source: function (request, response) {
-  //       $.ajax({
-  //         url: "http://en.wikipedia.org/w/api.php",
-  //         dataType: "jsonp",
-  //         data: {
-  //           action: "opensearch",
-  //           format: "json",
-  //           search: request.term,
-  //           namespace: 0,
-  //           limit: 8,
-  //         },
-  //         success: function (data) {
-  //           response(data[1]);
-  //         },
-  //       });
-  //     },
-  //   });
-  // });
-  // const fetchData = async (value) => {
-  //   try {
-  //     // Fetch data from Wikipedia API
-  //     const response = await axios.get(
-  //       `https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=${value}`
-  //     );
-  //     // Extract search results from the response
-  //     const searchResults = response.data.query.search;
-  //     // Set search results in state
-  //     setResults(searchResults);
-  //   } catch (error) {
-  //     console.error('Error fetching search results:', error);
-  //   }
-  // };
-  
+    const handleInputChange = (e) => {
+        const inputValue = e.target.value;
+        setInput(inputValue);
+        
+    };      
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // setResults(input);
+        // 
+        axios.post('http://localhost:8000/inputstart', { input: input })
+        .then(() => {
+            console.log('input start sent to backend:', input);
+        })
+        .catch((error) => {
+            console.error('Error sending data to backend:', error);
+        });
+    };
+    
+    const handleSuggestionClick = (suggestion) => {
+        setInput(suggestion);
+        setSuggestions([]);
+        setResults(suggestion);
+    };
+    return (
+        <div className="search-section">
+            <form onSubmit={handleSubmit}>
+                <input
+                type="text"
+                className="search-bar searchClass"
+                placeholder="Search..."
+                value={input}
+                onChange={handleInputChange}
+                />
+                <button type="submit" className="go-button">
+                Go
+                </button>
+            </form>
+            <ul className="suggestions-list">
+                {suggestions.map((suggestion, index) => (
+                <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                    {suggestion}
+                </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
 
-  // masih error gais
-  // const fetchData = async (value) => {
-  //   try {
-  //     // Fetch data from Wikipedia API
-  //     const response = await axios.get(
-  //       `https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=${value}`
-  //     );
-  //     // Extract search results from the response
-  //     const searchResults = response.data.query.search;
-  //     // Set search results in state
-  //     setResults(searchResults);
-  //   } catch (error) {
-  //     console.error('Error fetching search results:', error);
-  //   }
-  // };
-
-  const handleChanges = (value) => {
-    setInput(value);
-    // fetchData(value);
-  }
-  return (
-    <div className="search-section">
-      {/* <input 
-      type="text" 
-      className="search-bar" 
-      placeholder="Search..." 
-      value={input} 
-      onChange={(e) => handleChanges(e.target.value)}
-      /> */}
-      <input
-        type="text"
-        className="search-bar"
-        placeholder="Search..."
-        value={input}
-        onChange={handleInputChange}
-      />
-      <ul className="suggestions-list">
-        {suggestions.map((suggestion, index) => (
-          <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-            {suggestion}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-export default SearchBar;
+export default SearchBar2;

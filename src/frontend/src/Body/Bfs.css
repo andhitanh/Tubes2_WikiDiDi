@@ -9,7 +9,8 @@
     align-items: center;
     width: 80%;
     font-family: 'Playfair Display', serif;
-    
+    font-size: 18px;
+    margin-top: 10px;
 }
 
 .button-bfs {
@@ -20,4 +21,40 @@
     margin-bottom: 10px;
     border-radius: 5px;
     border: 1px solid black;
+    font-size: 16px;
+}
+
+.graph-container{
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 20px;
+    justify-items: center;
+    text-align: justify;
+}
+
+.recent-req {
+    text-align: center; /* Membuat judul dan isi rata tengah */
+  }
+  
+  .recent-req ul {
+    list-style: none; /* Menghilangkan bullet points */
+    padding: 0; /* Menghapus padding bawaan dari list */
+    display: grid; /* Menggunakan CSS Grid untuk tata letak */
+    gap: 10px; /* Jarak antara elemen-elemen */
+  }
+  
+.recent-req p {
+    margin-top: 0;
+    margin-left: 20px;
+    margin-right: 20px;
+    text-align: justify;
+  }
+.contain{
+    text-align: start;
+    font-size: 18px;
+}
+
+.node-title{
+    font-size: 10px;
+    font-weight: lighter;
 }

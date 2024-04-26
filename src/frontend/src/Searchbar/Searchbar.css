@@ -11,3 +11,24 @@
     outline: none;
 }
   
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 5px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    max-width: 270px;
+    border-radius: 5px;
+} 
+
+.ui-menu-item {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.ui-menu-item:hover {
+    background-color: #f0f0f0;
+}
