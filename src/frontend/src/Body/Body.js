@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import './Body.css'; // Import file CSS untuk styling Body
 import SearchBar from '../Searchbar/Searchbar'; // Import SearchBar component
+import SearchBar2 from '../Searchbar/SearchBar2';
 import SearchResultList from '../Searchbar/SearchResultList';
 import Bfs from './Bfs';
 import Ids from './Ids';
@@ -74,7 +75,7 @@ const Body = () => {
           {searchData.map((searchItem, index) => (
             <React.Fragment key={searchItem.id}>
               <div className="sub-search">
-                <SearchBar
+                <SearchBar2
                   id={searchItem.id}
                   setResults={(results) =>
                     handleSearchChange(searchItem.id, searchItem.input, results)
