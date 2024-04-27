@@ -23,7 +23,7 @@ WikiRace atau Wiki Game adalah permainan yang melibatkan Wikipedia, sebuah ensik
 - Menampilkan solusi Permainan WikiRace berdasarkan input data judul asal dan tujuan Wikipedia dari pengguna berdasarkan dua pilihan algoritma (BFS atau IDS)
 
 ## Requirements
-Anda harus menginstall react dan go
+Anda harus menginstall Node js, React, dan Go
 
 1. Instalasi React
 Untuk menginstal React, Anda dapat menggunakan npm (Node Package Manager), yang biasanya sudah disertakan dengan instalasi Node.js. Jadi, pastikan Anda telah menginstal Node.js terlebih dahulu. Kemudian, jalankan perintah berikut di terminal atau command prompt Anda:
