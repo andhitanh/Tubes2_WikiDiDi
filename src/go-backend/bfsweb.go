@@ -21,14 +21,17 @@ type InputData struct {
 	Algortihm string `json:"algorithm"`
 }
 
-func breadthFirstSearch(startPage string, currentPage string, targetPage string, visited map[string]bool, appended map[string]bool, path []string, queue *Queue, parent map[string]string) []string {
+func breadthFirstSearch(startPage string, currentPage string, targetPage string, visited map[string]bool, appended map[string]bool, path []string, queue *Queue, parent map[string]string) [][]string {
 	if currentPage == targetPage {
-		path := []string{currentPage}
+		var path []string
+		path = append(path, currentPage)
+		paths := [][]string{}
 		for currentPage != startPage {
 			currentPage = parent[currentPage]
 			path = append([]string{currentPage}, path...)
 		}
-		return path
+		paths = append(paths, path)
+		return paths
 	}
 	fmt.Println(currentPage)
 
@@ -131,7 +134,7 @@ func inputStartHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if path != nil {
-			fmt.Println("Path yang ditemukan:", len(path))
+			fmt.Println("Path yang ditemukan:", path)
 			for _, page := range path {
 				fmt.Println(page)
 			}

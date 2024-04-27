@@ -1,10 +1,7 @@
 import React, {useState} from 'react';
 import './Body.css'; // Import file CSS untuk styling Body
 import SearchBar from '../Searchbar/Searchbar'; // Import SearchBar component
-import SearchBar2 from '../Searchbar/SearchBar2';
 import SearchResultList from '../Searchbar/SearchResultList';
-import Bfs from './Bfs';
-import Ids from './Ids';
 
 const Body = () => {
   const [results, setResults] = useState([]);

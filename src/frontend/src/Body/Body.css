@@ -11,6 +11,7 @@
     box-shadow: 0 0 0 3px black, 0 0 0 6px white;
     overflow: hidden;
     background-color: #fff;
+ 
   }
 .body-content{
     align-items: flex-start;
@@ -22,7 +23,7 @@
     margin-bottom: 10px;
     font-size: 35px;
     font-family: 'Playfair Display', serif;
-    
+
 }
 
 .body-content p {
