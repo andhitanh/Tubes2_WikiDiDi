@@ -15,7 +15,7 @@ const BfsTest = () => {
   }, [result]);
 
   const drawGraph = () => {
-    const width =400;
+    const width = 400;
     const height = 100;
 
     d3.select('#graph-container').selectAll('*').remove();
@@ -55,18 +55,6 @@ const BfsTest = () => {
       .attr('r', 5)
       .attr('fill', '#000');
 
-    // // // Tambahkan label nama pada setiap node
-    // node.append('title')
-    //   .text(d => d.name);
-    // // Tambahkan teks nama pada setiap node
-    // svg.append('g')
-    //   .selectAll('text')
-    //   .data(nodes)
-    //   .join('text')
-    //   .attr('x', d => d.x + 10)
-    //   .attr('y', d => d.y)
-    //   .text(d => d.name);
-
     simulation.on('tick', () => {
       link
         .attr('x1', d => d.source.x)
@@ -81,23 +69,33 @@ const BfsTest = () => {
   };
 
   const handleBfsRequest = async () => {
-    // const testPathData = [
-    // //   ["Rurtalbahn GmbH", "DB_Bahn", "Melati", "Andhita"],
-    //   ["Lars Vogt", "Bach_Cantatas", "Andhita"]
-    // ];
-    
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+          reject(new Error('Request timed out'));
+      }, 5 * 60 * 1000); // 5 minutes
+    });
+
     try {
-        const response = await fetch('http://localhost:8000/bfs');
+        const responsePromise = fetch('http://localhost:8000/bfs');
+        const response = await Promise.race([responsePromise, timeoutPromise]);
         const result = await response.json();
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
         console.log(result);
         setResult(result);
         setHistory(prev => {
-        const updatedHistory = [result, ...prev]; // Tambahkan permintaan BFS terbaru ke awal array
-        return updatedHistory.slice(0, 3); // Potong array agar memiliki maksimal 3 elemen
+          const updatedHistory = [result, ...prev]; // Tambahkan permintaan BFS terbaru ke awal array
+          return updatedHistory.slice(0, 3); // Potong array agar memiliki maksimal 3 elemen
       });
-      
     } catch (error) {
-      console.error('Error:', error);
+      if (error.message === 'Request timed out') {
+          // Tampilkan pesan timeout
+          document.getElementById('timeoutMessage').style.display = 'block';
+      } else {
+          // Tampilkan pesan error lainnya
+          console.error('Error:', error.message);
+      }
     }
   };
 
@@ -160,6 +158,6 @@ const BfsTest = () => {
         </div>
     </div>
   );
-};
+}
 
 export default BfsTest;

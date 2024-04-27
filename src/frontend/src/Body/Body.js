@@ -6,7 +6,6 @@ import SearchResultList from '../Searchbar/SearchResultList';
 import Bfs from './Bfs';
 import Ids from './Ids';
 
-
 const Body = () => {
   const [results, setResults] = useState([]);
   const [searchData, setSearchData] = useState([
@@ -22,81 +21,12 @@ const Body = () => {
         item.id === id ? { ...item, input, results } : item
       )
     );
-  };
-
-  const handleSwitchChange = () => {
-    setSearchAlgorithm(searchAlgorithm === 'BFS' ? 'IDS' : 'BFS');
-  };
-
-
-  const handleGoButtonClick = () => {
-
-    const maxDepth = 10;
-    // Tentukan targetPage dari input SearchBar kanan (indeks 1)
-    const targetPage = searchData[1].input;
-
-    const fetchData = async () => {
-      try {
-        // Memuat modul WebAssembly
-        const go = new global.Go();
-        const wasmPath = process.env.PUBLIC_URL + '/bfsweb.wasm';
-        const response = await fetch(wasmPath);
-        const buffer = await response.arrayBuffer();
-        const { instance } = await WebAssembly.instantiate(buffer, go.importObject);
-
-        // Panggil fungsi BFS dari modul WebAssembly
-        const { breadthFirstSearch } = instance.exports;
-        breadthFirstSearch("parameter_input");
-      } catch (error) {
-        console.error('Error loading WebAssembly module:', error);
-      }
-    };
-
-    fetchData();
-   
- 
-     // Catatan: Ganti "parameter_input" dengan nilai yang Anda inginkan untuk parameter BFS Anda
-
-    // Panggil fungsi pencarian yang sesuai berdasarkan jenis algoritma yang dipilih
-    // if (searchAlgorithm === 'BFS') {
-    //   // Panggil fungsi BFS dengan startPage dari input SearchBar kiri (indeks 0) dan targetPage
-    //   // breadthFirstSearch(searchData[0].input, targetPage);
-    // } else if (searchAlgorithm === 'IDS') {
-    //   // Panggil fungsi IDS dengan startPage dari input SearchBar kiri (indeks 0) dan targetPage
-    //   // iterativeDeepeningWikirace(searchData[0].input, targetPage, maxDepth);
-    // }
-  };
+};
 
   return (
     <div className="body-container">
         <div className="body-content">
-          {searchData.map((searchItem, index) => (
-            <React.Fragment key={searchItem.id}>
-              <div className="sub-search">
-              {searchItem.id === 0 ? (
-                  <SearchBar
-                    id={searchItem.id}
-                    setResults={(results) =>
-                      handleSearchChange(searchItem.id, searchItem.input, results)
-                    }
-                  />
-                ) : (
-                  <SearchBar2
-                    id={searchItem.id}
-                    setResults={(results) =>
-                      handleSearchChange(searchItem.id, searchItem.input, results)
-                    }
-                  />
-                )}
-                <SearchResultList results={searchItem.results} />
-              </div>
-              {index < searchData.length - 1 && <p>to</p>}
-            </React.Fragment>
-          ))}
-        </div>
-        <div className='option-algo'>
-          <Bfs />
-          <Ids/>
+          <SearchBar />
         </div>
     </div>
   );

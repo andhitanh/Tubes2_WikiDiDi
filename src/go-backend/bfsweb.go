@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/rs/cors"
@@ -15,7 +16,9 @@ var startPage = ""  // Define startPage globally
 var targetPage = "" // Define targetPage globally
 
 type InputData struct {
-	Input string `json:"input"`
+	Start     string `json:"startPage"`
+	Target    string `json:"targetPage"`
+	Algortihm string `json:"algorithm"`
 }
 
 func breadthFirstSearch(startPage string, currentPage string, targetPage string, visited map[string]bool, appended map[string]bool, path []string, queue *Queue, parent map[string]string) []string {
@@ -63,128 +66,88 @@ func breadthFirstSearch(startPage string, currentPage string, targetPage string,
 	// output: list of hyperlink yg jadi path atau nil klo gak ketemu
 }
 
-// Fungsi handler suntuk penanganan permintaan BFS
-func bfsHandler(w http.ResponseWriter, r *http.Request) {
-	startPage := "Vectors"
-	targetPage := "Mathematics"
-	// var inputData map[string]string
-	q := NewQueue()
-	visited := make(map[string]bool)
-	appended := make(map[string]bool)
-	parent := make(map[string]string)
-
-	start := time.Now()
-
-	path := breadthFirstSearch(startPage, startPage, targetPage, visited, appended, []string{startPage}, q, parent)
-	duration := time.Since(start)
-
-	response := map[string]interface{}{
-		"path":     path,
-		"duration": duration.Seconds(), // Konversi durasi menjadi detik
-		"visited":  len(visited),
-	}
-
-	if path != nil {
-		fmt.Println("Path yang ditemukan:", len(path))
-		for _, page := range path {
-			fmt.Println(page)
-		}
-		fmt.Println("Jumlah artikel dikunjungi: ", len(visited))
-	} else {
-		fmt.Println("Path tidak ditemukan.")
-	}
-
-	fmt.Println("Durasi:", duration)
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	// Mengirimkan respon JSON ke frontend
-	json.NewEncoder(w).Encode(response)
-}
-
-func idsHandler(w http.ResponseWriter, r *http.Request) {
-	startPage := "Vectors"
-	targetPage := "Mathematics"
-	// Ambil nilai input dari data input
-	// var inputData map[string]string
-	// err := json.NewDecoder(r.Body).Decode(&inputData)
-	// if err != nil {
-	// 	http.Error(w, "Failed to decode request body", http.StatusBadRequest)
-	// 	return
-	// }
-	// startPage := inputData["startPage"]
-	maxDepth := 5
-
-	start := time.Now()
-
-	path, visited := iterativeDeepeningWikirace(startPage, targetPage, maxDepth)
-	duration := time.Since(start)
-
-	response := map[string]interface{}{
-		"path":     path,
-		"duration": duration.Seconds(), // Konversi durasi menjadi detik
-		"visited":  visited,
-	}
-
-	if path != nil {
-		fmt.Println("Path yang ditemukan:", len(path))
-		for _, page := range path {
-			fmt.Println(page)
-		}
-	} else {
-		fmt.Println("Path tidak ditemukan.")
-	}
-
-	fmt.Println("Durasi:", duration)
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	// Mengirimkan respon JSON ke frontend
-	fmt.Println(response)
-	json.NewEncoder(w).Encode(response)
-}
-
 func inputStartHandler(w http.ResponseWriter, r *http.Request) {
 	// Mendekode body permintaan menjadi struktur data yang diinginkan (misalnya JSON)
+	decoder := json.NewDecoder(r.Body)
+	fmt.Println(decoder)
 	var inputData InputData
+	err := decoder.Decode(&inputData)
 
-	fmt.Println(inputData)
-
-	startPage = inputData.Input
-	response := map[string]interface{}{
-		"message": "Data received successfully",
-		"input":   startPage, // Masukkan input di sini
-	}
-	// Mengirimkan respons ke frontend
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000") // Tambahkan header CORS
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	json.NewEncoder(w).Encode(response)
-}
-
-func inputTargetHandler(w http.ResponseWriter, r *http.Request) {
-	// Mendekode body permintaan menjadi struktur data yang diinginkan (misalnya JSON)
-	// var inputData InputData/
-	var inputData InputData
-	err := json.NewDecoder(r.Body).Decode(&inputData)
 	if err != nil {
 		http.Error(w, "Failed to decode request body", http.StatusBadRequest)
 		return
 	}
+	startPage = strings.ReplaceAll(inputData.Start, " ", "_")
+	targetPage = strings.ReplaceAll(inputData.Target, " ", "_")
+	algoritma := inputData.Algortihm
 
-	targetPage = inputData.Input
-	response := map[string]interface{}{
-		"message": "Data received successfully",
-		"input":   targetPage, // Masukkan input di sini
+	if algoritma == "BFS" {
+		q := NewQueue()
+		visited := make(map[string]bool)
+		appended := make(map[string]bool)
+		parent := make(map[string]string)
+
+		start := time.Now()
+
+		path := breadthFirstSearch(startPage, startPage, targetPage, visited, appended, []string{startPage}, q, parent)
+		duration := time.Since(start)
+
+		response := map[string]interface{}{
+			"path":     path,
+			"duration": duration.Seconds(), // Konversi durasi menjadi detik
+			"visited":  len(visited),
+		}
+
+		if path != nil {
+			fmt.Println("Path yang ditemukan:", len(path))
+			for _, page := range path {
+				fmt.Println(page)
+			}
+			fmt.Println("Jumlah artikel dikunjungi: ", len(visited))
+		} else {
+			fmt.Println("Path tidak ditemukan.")
+		}
+
+		fmt.Println("Durasi:", duration)
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		// Mengirimkan respon JSON ke frontend
+		json.NewEncoder(w).Encode(response)
+		return
 	}
+	if algoritma == "IDS" {
+		maxDepth := 5
 
-	// Mengirimkan respons ke frontend
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000") // Tambahkan header CORS
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	json.NewEncoder(w).Encode(response)
+		start := time.Now()
+
+		path, visited := iterativeDeepeningWikirace(startPage, targetPage, maxDepth)
+		duration := time.Since(start)
+
+		response := map[string]interface{}{
+			"path":     path,
+			"duration": duration.Seconds(), // Konversi durasi menjadi detik
+			"visited":  visited,
+		}
+
+		if path != nil {
+			fmt.Println("Path yang ditemukan:", len(path))
+			for _, page := range path {
+				fmt.Println(page)
+			}
+		} else {
+			fmt.Println("Path tidak ditemukan.")
+		}
+
+		fmt.Println("Durasi:", duration)
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		// Mengirimkan respon JSON ke frontend
+		fmt.Println(response)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
 }
 
 // Fungsi main untuk menjalankan server HTTP
@@ -194,11 +157,9 @@ func main() {
 	// Gunakan middleware cors untuk semua handler
 	handler := c.Handler(http.DefaultServeMux)
 
-	// Mulai server HTTP dengan handler yang telah dimodifikasi
 	http.HandleFunc("/inputstart", inputStartHandler)
-	http.HandleFunc("/inputtarget", inputStartHandler)
-	http.HandleFunc("/bfs", bfsHandler)
-	http.HandleFunc("/ids", idsHandler)
+	fmt.Println("StartPage main", startPage)
+	fmt.Println("Target main", targetPage)
 	fmt.Println("Server started at :8000")
 	http.ListenAndServe(":8000", handler)
 }
