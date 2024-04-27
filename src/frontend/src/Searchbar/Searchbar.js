@@ -144,16 +144,7 @@ const SearchBar = () => {
                             <strong>{result.path[0][0]}</strong> to{" "}
                             <strong>{result.path[0][result.path[0].length - 1]}</strong>{" "}that visited{" "}
                             <strong>{history[0]["visited"]}</strong>{" "} links in{" "}
-                            {history[0]["duration"] > 60 ? (
-                                <>
-                                    <strong>{Math.floor(history[0]["duration"] / 60)}</strong> minutes and{" "}
-                                    <strong>{(history[0]["duration"] % 60).toFixed(2)}</strong> seconds!
-                                </>
-                            ) : (
-                                <>
-                                    <strong>{history[0]["duration"].toFixed(2)}</strong> seconds!
-                                </>
-                            )}
+                            <strong>{history[0]["duration"].toFixed(2)}</strong> miliseconds!
                         </p>
                         <div className='contain'>
                             {history.length > 0 && (
@@ -189,9 +180,9 @@ const SearchBar = () => {
                         {history.slice(1).map((path, index) => (
                             <p key={index}>
                                 Found <strong>{path.path[0].length - 1}</strong> degrees of separation from{" "}
-                                <strong>{history[0]["path"][0]}</strong> to{" "}
+                                <strong>{history[index]["path"]}</strong> to{" "}
                                 <strong>{path.path[0][path.path[0].length - 1]}</strong> in{" "}
-                                <strong>{history[index + 1]["duration"].toFixed(2)}</strong> seconds!
+                                <strong>{history[index + 1]["duration"].toFixed(2)}</strong> miliseconds!
                             </p>
                         ))}
                     </ul>

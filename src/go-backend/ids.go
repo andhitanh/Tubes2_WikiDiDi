@@ -47,7 +47,7 @@ func getLinksCaching(pageTitle string) ([]string, error) {
 				return
 			}
 
-			if parsedLink.Host == "" && strings.HasPrefix(parsedLink.Path, "/wiki/") && !strings.Contains(parsedLink.Path, ":") && !strings.Contains(parsedLink.Path, ".") && !strings.Contains(parsedLink.Path, "%"){
+			if parsedLink.Host == "" && strings.HasPrefix(parsedLink.Path, "/wiki/") && !strings.Contains(parsedLink.Path, ":") && !strings.Contains(parsedLink.Path, ".") && !strings.Contains(parsedLink.Path, "%") {
 				decodedPath, err := url.PathUnescape(parsedLink.Path)
 				if err != nil {
 					fmt.Println("Error decoding link path:", err)
@@ -115,11 +115,11 @@ func depthLimitedSearch(currentPage *Node, targetPage *Node, depthLimit int, vis
 	// apabila tidak ditemukan kembalikan nil
 }
 
-func iterativeDeepeningWikirace(startPage string, targetPage string, maxDepth int) ([]string, int) {
+func iterativeDeepeningWikirace(startPage string, targetPage string, maxDepth int) ([][]string, int) {
 	// ubah masukan startPage dan targetPage menjadi sebuah Node
 	startNode := &Node{Name: startPage}
 	targetNode := &Node{Name: targetPage}
-	
+
 	// inisiasi
 	visited := make(map[string]bool)
 	totalVisit := make(map[string]int)
@@ -134,16 +134,17 @@ func iterativeDeepeningWikirace(startPage string, targetPage string, maxDepth in
 		if result != nil {
 			totalVisitedPages = len(totalVisit)
 			var path []string
+			paths := [][]string{}
 			current := result
 			for current != nil {
 				path = append([]string{current.Name}, path...)
 				current = current.Parent
 			}
-			return path, totalVisitedPages
+			paths = append(paths, path)
+			return paths, totalVisitedPages
 		}
 	}
 
 	return nil, totalVisitedPages
 	// output berupa slice of string yang berisi daftar laman hasil pencarian dan total laman yang telah dikunjungi
 }
-

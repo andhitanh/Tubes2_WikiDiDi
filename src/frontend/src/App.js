@@ -6,7 +6,7 @@ import { useState } from 'react';
 const NavLinks = () => {
     return (
         <div className='nav-links'>
-            <a href="https://github.com/andhitanh/Tubes2_WikiDiDi" className="nav-link" target="_blank" rel="noopener noreferrer">Youtube</a>
+            <a href="https://youtu.be/zFxV5if1vdY?si=YPsx9tRzlLWlPvzE" className="nav-link" target="_blank" rel="noopener noreferrer">Youtube</a>
             <span className="separator"> | </span> 
             <a href="https://github.com/andhitanh/Tubes2_WikiDiDi" className="nav-link" target="_blank" rel="noopener noreferrer">Github</a>
         </div>

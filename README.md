@@ -51,7 +51,7 @@ npm run start
 cd src/go-backend
 ```
 ```
-go run bfsweb.go scrap.go queue.go test.go
+go run bfsweb.go scrap.go queue.go ids.go
 ```
 
 

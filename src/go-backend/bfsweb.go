@@ -97,7 +97,7 @@ func inputStartHandler(w http.ResponseWriter, r *http.Request) {
 
 		response := map[string]interface{}{
 			"path":     path,
-			"duration": duration.Seconds(), // Konversi durasi menjadi detik
+			"duration": duration.Milliseconds(), // Konversi durasi menjadi detik
 			"visited":  len(visited),
 		}
 
@@ -129,7 +129,7 @@ func inputStartHandler(w http.ResponseWriter, r *http.Request) {
 
 		response := map[string]interface{}{
 			"path":     path,
-			"duration": duration.Seconds(), // Konversi durasi menjadi detik
+			"duration": duration.Milliseconds(), // Konversi durasi menjadi detik
 			"visited":  visited,
 		}
 
